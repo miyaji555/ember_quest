@@ -60,6 +60,10 @@ class EmberQuestGame extends FlameGame {
           );
           break;
         case WaterEnemy:
+          add(
+            WaterEnemy(
+                gridPosition: block.gridPosition, xOffset: xPositionOffset),
+          );
           break;
       }
     }
