@@ -12,6 +12,7 @@ import 'managers/segment_managers.dart';
 import 'objects/ground_block.dart';
 import 'objects/platform_block.dart';
 import 'objects/star.dart';
+import 'overlays/hud.dart';
 
 class EmberQuestGame extends FlameGame
     with HasKeyboardHandlerComponents, HasCollisionDetection {
@@ -23,6 +24,9 @@ class EmberQuestGame extends FlameGame
   late final CameraComponent cameraComponent;
   late double lastBlockXPosition = 0.0;
   late UniqueKey lastBlockKey;
+
+  int starsCollected = 0;
+  int health = 3;
 
   @override
   Future<void> onLoad() async {
@@ -38,6 +42,7 @@ class EmberQuestGame extends FlameGame
 
     cameraComponent = CameraComponent(world: world);
     cameraComponent.viewfinder.anchor = Anchor.topLeft;
+    cameraComponent.viewport.add(Hud());
     addAll([cameraComponent, world]);
 
     initializeGame();
