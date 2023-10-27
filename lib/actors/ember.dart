@@ -64,7 +64,7 @@ class EmberPlayer extends SpriteAnimationComponent
 // crashing through the ground or a platform.
     velocity.y = velocity.y.clamp(-jumpSpeed, terminalVelocity);
 
-    game.objectSpeed = 0;
+    game.objectSpeed = -100;
 // Prevent ember from going backwards at screen edge.
     if (position.x - 36 <= 0 && horizontalDirection < 0) {
       velocity.x = 0;
@@ -72,7 +72,7 @@ class EmberPlayer extends SpriteAnimationComponent
 // Prevent ember from going beyond half screen.
     if (position.x + 64 >= game.size.x / 2 && horizontalDirection > 0) {
       velocity.x = 0;
-      game.objectSpeed = -moveSpeed;
+      // game.objectSpeed = -moveSpeed;
     }
 
     position += velocity * dt;
