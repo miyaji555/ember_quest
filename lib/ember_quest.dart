@@ -20,7 +20,7 @@ class EmberQuestGame extends FlameGame
 
   final world = World();
   late EmberPlayer _ember;
-  double objectSpeed = 0;
+  double objectSpeed = -100;
   late final CameraComponent cameraComponent;
   late double lastBlockXPosition = 0.0;
   late UniqueKey lastBlockKey;
@@ -112,6 +112,7 @@ class EmberQuestGame extends FlameGame
   void reset() {
     starsCollected = 0;
     health = 3;
+    objectSpeed = -100;
     initializeGame(false);
   }
 }
