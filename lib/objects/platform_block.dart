@@ -29,7 +29,10 @@ class PlatformBlock extends SpriteComponent with HasGameRef<EmberQuestGame> {
     super.update(dt);
     velocity.x = game.objectSpeed;
     position += velocity * dt;
-    if (position.x < -size.x) removeFromParent(); // 画面外に出たのでPlatformを削除
+    if (position.x < -size.x || game.health <= 0) {
+      removeFromParent();
+    } // 画面外に出たのでPlatformを削除
+
     super.update(dt);
   }
 }
