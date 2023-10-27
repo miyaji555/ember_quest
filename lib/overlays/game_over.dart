@@ -35,7 +35,15 @@ class GameOver extends StatelessWidget {
                   fontSize: 24,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
+              Text(
+                'Your score: ${game.starsCollected}',
+                style: const TextStyle(
+                  color: whiteTextColor,
+                  fontSize: 24,
+                ),
+              ),
+              const SizedBox(height: 20),
               SizedBox(
                 width: 200,
                 height: 75,
