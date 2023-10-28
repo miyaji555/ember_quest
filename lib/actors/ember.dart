@@ -20,10 +20,13 @@ class EmberPlayer extends SpriteAnimationComponent
   final Vector2 fromAbove = Vector2(0, -1);
   bool isOnGround = false;
   final double gravity = 15;
+  double velocityOffsetOnKeyboard = 0;
+  double velocityOffsetOnJoystick = 0;
   final double jumpSpeed = 600;
   final double terminalVelocity = 150;
 
-  bool hasJumped = false;
+  bool hasJumpedOnKeyboard = false;
+  bool hasJumpedOnJoystick = false;
   bool hitByEnemy = false;
 
   int horizontalDirection = 0;
@@ -54,17 +57,22 @@ class EmberPlayer extends SpriteAnimationComponent
     velocity.y += gravity;
 
 // Determine if ember has jumped
-    if (hasJumped) {
+    if (hasJumpedOnKeyboard || hasJumpedOnJoystick) {
+      hasJumpedOnKeyboard = true;
+      hasJumpedOnJoystick = true;
       if (isOnGround) {
         velocity.y = -jumpSpeed;
         isOnGround = false;
       }
-      hasJumped = false;
+      hasJumpedOnJoystick = false;
+      hasJumpedOnKeyboard = false;
     }
 
 // Prevent ember from jumping to crazy fast as well as descending too fast and
 // crashing through the ground or a platform.
-    velocity.y = velocity.y.clamp(-jumpSpeed, terminalVelocity);
+    velocity.y = velocity.y.clamp(-jumpSpeed, terminalVelocity) +
+        velocityOffsetOnJoystick +
+        velocityOffsetOnKeyboard;
 
 // Prevent ember from going backwards at screen edge.
     if (position.x - 36 <= 0 && horizontalDirection < 0) {
@@ -104,8 +112,9 @@ class EmberPlayer extends SpriteAnimationComponent
                 keysPressed.contains(LogicalKeyboardKey.arrowRight))
             ? 1
             : 0;
-    hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
-
+    hasJumpedOnKeyboard = keysPressed.contains(LogicalKeyboardKey.space);
+    velocityOffsetOnKeyboard =
+        keysPressed.contains(LogicalKeyboardKey.arrowDown) ? 100 : 0;
     return true;
   }
 
@@ -117,10 +126,9 @@ class EmberPlayer extends SpriteAnimationComponent
     if (game.joystick.relativeDelta[0] < -0.5) {
       horizontalDirectionOnJoystick = -1;
     }
-    // hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
+    hasJumpedOnJoystick = game.joystick.relativeDelta[1] < -0.5;
+    velocityOffsetOnJoystick = game.joystick.relativeDelta[1] > 0.5 ? 100 : 0;
   }
-
-  void onInput() {}
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
