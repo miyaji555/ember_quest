@@ -27,6 +27,8 @@ class EmberPlayer extends SpriteAnimationComponent
   bool hitByEnemy = false;
 
   int horizontalDirection = 0;
+  int horizontalDirectionOnKeyboard = 0;
+  int horizontalDirectionOnJoystick = 0;
 
   @override
   void onLoad() {
@@ -45,6 +47,7 @@ class EmberPlayer extends SpriteAnimationComponent
 
   @override
   void update(double dt) {
+    onJoystickEvent();
     velocity.x = horizontalDirection * moveSpeed;
     position += velocity * dt;
     // Apply basic gravity
@@ -82,25 +85,42 @@ class EmberPlayer extends SpriteAnimationComponent
     if (game.health <= 0) {
       removeFromParent();
     }
+    horizontalDirection =
+        horizontalDirectionOnKeyboard + horizontalDirectionOnJoystick;
     super.update(dt);
   }
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    horizontalDirection = 0;
-    horizontalDirection += (keysPressed.contains(LogicalKeyboardKey.keyA) ||
-            keysPressed.contains(LogicalKeyboardKey.arrowLeft))
-        ? -1
-        : 0;
+    horizontalDirectionOnKeyboard = 0;
+    horizontalDirectionOnKeyboard +=
+        (keysPressed.contains(LogicalKeyboardKey.keyA) ||
+                keysPressed.contains(LogicalKeyboardKey.arrowLeft))
+            ? -1
+            : 0;
 
-    horizontalDirection += (keysPressed.contains(LogicalKeyboardKey.keyD) ||
-            keysPressed.contains(LogicalKeyboardKey.arrowRight))
-        ? 1
-        : 0;
+    horizontalDirectionOnKeyboard +=
+        (keysPressed.contains(LogicalKeyboardKey.keyD) ||
+                keysPressed.contains(LogicalKeyboardKey.arrowRight))
+            ? 1
+            : 0;
     hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
 
     return true;
   }
+
+  void onJoystickEvent() {
+    horizontalDirectionOnJoystick = 0;
+    if (game.joystick.relativeDelta[0] > 0.5) {
+      horizontalDirectionOnJoystick = 1;
+    }
+    if (game.joystick.relativeDelta[0] < -0.5) {
+      horizontalDirectionOnJoystick = -1;
+    }
+    // hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
+  }
+
+  void onInput() {}
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {

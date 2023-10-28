@@ -4,6 +4,7 @@ import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/actors/ember.dart';
 
@@ -24,6 +25,7 @@ class EmberQuestGame extends FlameGame
   late final CameraComponent cameraComponent;
   late double lastBlockXPosition = 0.0;
   late UniqueKey lastBlockKey;
+  late JoystickComponent joystick;
 
   int starsCollected = 0;
   int health = 3;
@@ -38,11 +40,32 @@ class EmberQuestGame extends FlameGame
       'heart.png',
       'star.png',
       'water_enemy.png',
+      'joystick_circle.png'
     ]);
+    final image = images.fromCache('joystick_circle.png');
+    final sheet = SpriteSheet.fromColumnsAndRows(
+      image: image,
+      columns: 2,
+      rows: 2,
+    );
+    joystick = JoystickComponent(
+      knob: SpriteComponent(
+        sprite: sheet.getSpriteById(0),
+        size: Vector2.all(50),
+      ),
+      background: SpriteComponent(
+        sprite: sheet.getSpriteById(1),
+        size: Vector2.all(100),
+      ),
+      margin: const EdgeInsets.only(left: 40, bottom: 40),
+    );
     cameraComponent = CameraComponent(world: world);
     cameraComponent.viewfinder.anchor = Anchor.topLeft;
-    addAll([cameraComponent, world]);
-
+    addAll([
+      cameraComponent,
+      world,
+      joystick,
+    ]);
     initializeGame(true);
   }
 
